@@ -1,5 +1,5 @@
 const CONTRACT_NAMES = {
-  MOCK_ERC20: 'MockERC20',
+  MY_TOKEN: 'MyToken',
 };
 
 module.exports = { CONTRACT_NAMES };
