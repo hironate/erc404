@@ -1,0 +1,28 @@
+{
+  "extends": ["solhint:recommended"],
+  "plugins": [],
+  "rules": {
+    "avoid-suicide": "error",
+    "avoid-sha3": "warn",
+    "no-inline-assembly": "warn",
+    "avoid-throw": "warn",
+    "avoid-tx-origin": "warn",
+    "func-visibility": [
+      "error",
+      { "external": "public", "ignoreConstructors": true }
+    ],
+    "state-visibility": ["error", { "internal": true }],
+    "visibility-modifier-order": "warn",
+    "no-console": "error",
+    "one-contract-per-file": "warn",
+    "contract-name-camelcase": "warn",
+    "event-name-camelcase": "warn",
+    "ordering": "warn",
+    "imports-on-top": "warn",
+    "reentrancy": "error",
+    "no-empty-blocks": "warn",
+    "no-global-import": "warn",
+    "no-unused-import": "error",
+    "no-unused-vars": "error"
+  }
+}
