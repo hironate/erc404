@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 import {ERC404} from "./ERC404.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-contract MyToken is ERC404 {
+contract MyERC404 is ERC404 {
     using Strings for uint256;
 
     string public dataURI;
     string public baseTokenURI;
 
-    constructor(address _owner) ERC404("MyToken", "MTK", 18, 10000, _owner) {
+    constructor(address _owner) ERC404("MyERC404", "ME404", 18, 10000, _owner) {
         balanceOf[_owner] = 10000 * 10 ** 18;
     }
 
@@ -60,7 +60,7 @@ contract MyToken is ERC404 {
             string memory jsonPreImage = string.concat(
                 string.concat(
                     string.concat(
-                        '{"name": "Colourful Circles #',
+                        '{"name": "My ERC404 #',
                         Strings.toString(id)
                     ),
                     '","description":"A collection of circles enabled by ERC404, an experimental token standard.","external_url":"","image":"'
