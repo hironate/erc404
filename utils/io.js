@@ -19,6 +19,19 @@ const writeABI = (contractPath, contractFileName) => {
   }
 };
 
+const readABI = (contractFileName) => {
+  try {
+    const rawData = fs.readFileSync(
+      path.join(__dirname, '../publish/abis', `${contractFileName}.json`),
+    );
+    const info = JSON.parse(rawData.toString());
+    return info;
+  } catch (error) {
+    console.error('Reading ABI error: ', error);
+    return null;
+  }
+};
+
 const writeContract = (contractFileName, address, deployer, args) => {
   const NETWORK = getNetwork();
 
@@ -62,4 +75,4 @@ const readContract = (contractFileName) => {
   }
 };
 
-module.exports = { writeABI, writeContract, readContract, getNetwork };
+module.exports = { writeABI, readABI, writeContract, readContract, getNetwork };
