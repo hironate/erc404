@@ -4,105 +4,160 @@ const {
   loadFixture,
 } = require('@nomicfoundation/hardhat-toolbox/network-helpers');
 const { deployContract } = require('./utils');
+const { CONTRACT_NAMES } = require('../utils/constants');
+const { tokenURIResponseData } = require('./data');
 
-describe('Testing ERC20 Contract', async () => {
+describe('Testing ERC404 Contract', async () => {
   const deployContractFixtures = async () => {
-    const [alice, bob, maria] = await ethers.getSigners();
+    const [owner, bob, maria] = await ethers.getSigners();
 
     // deploy contract
-    const mockERC20 = await deployContract('MockERC20');
+    const myERC404 = await deployContract(CONTRACT_NAMES.MY_ERC404, [
+      owner.address,
+    ]);
 
-    return { alice, bob, maria, mockERC20 };
+    await myERC404.setWhitelist(owner.address, true);
+
+    return { owner, bob, maria, myERC404 };
   };
 
-  it('should supply tokens to the Owner', async () => {
-    const { mockERC20, alice } = await loadFixture(deployContractFixtures);
+  it('Should set the correct dataURI', async () => {
+    const dataURI = 'https://example.com/data/';
 
-    expect(await mockERC20.balanceOf(alice.address)).to.equal(1000000);
+    const { myERC404 } = await loadFixture(deployContractFixtures);
+
+    await myERC404.setDataURI(dataURI);
+
+    expect(await myERC404.dataURI()).to.equal(dataURI);
   });
 
-  it('should return total supply', async () => {
-    const { mockERC20 } = await loadFixture(deployContractFixtures);
+  it('Should not let someone other than owner set the dataURI', async () => {
+    const { myERC404, bob } = await loadFixture(deployContractFixtures);
+    const dataURI = 'https://example.com/data/';
 
-    expect(await mockERC20.totalSupply()).to.equal(1000000);
+    await expect(
+      myERC404.connect(bob).setDataURI(dataURI),
+    ).to.be.revertedWithCustomError(myERC404, 'Unauthorized()');
   });
 
-  describe('Transferring tokens', async () => {
-    it('should transfer tokens successfully', async () => {
-      const { alice, bob, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
-      await mockERC20.connect(alice).transfer(bob.address, 10);
-      const aliceBalance = parseInt(
-        await mockERC20.balanceOf(alice.address),
-        10,
-      );
-      const bobBalance = parseInt(await mockERC20.balanceOf(bob.address), 10);
-      expect(aliceBalance).to.equal(999990);
-      expect(bobBalance).to.equal(10);
-    });
+  it('Should set the correct name and symbol', async () => {
+    const { myERC404 } = await loadFixture(deployContractFixtures);
+    const newName = 'New Name';
+    const newSymbol = 'NN';
 
-    it('should emit event after successful transfer', async () => {
-      const { alice, bob, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
+    await myERC404.setNameSymbol(newName, newSymbol);
 
-      await expect(mockERC20.connect(alice).transfer(bob.address, 10))
-        .to.emit(mockERC20, 'Transfer')
-        .withArgs(alice.address, bob.address, 10);
-    });
+    expect(await myERC404.name()).to.equal(newName);
+    expect(await myERC404.symbol()).to.equal(newSymbol);
   });
 
-  describe('Giving approval for Token Transfer', async () => {
-    it('should emit event after giving approval', async () => {
-      const { alice, bob, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
+  it('Should mint tokens to owner on deployment', async () => {
+    const { myERC404, owner } = await loadFixture(deployContractFixtures);
 
-      await expect(mockERC20.connect(alice).approve(bob.address, 10))
-        .to.emit(mockERC20, 'Approval')
-        .withArgs(alice.address, bob.address, 10);
-    });
+    expect(await myERC404.balanceOf(owner.address)).to.equal(
+      BigInt(10000 * 10 ** 18),
+    );
+  });
 
-    it('should transfer token from allowance', async () => {
-      const { alice, bob, maria, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
-      await mockERC20.connect(alice).approve(bob.address, 10);
+  it('Should return correct tokenURI if baseTokenURI is set', async () => {
+    const { myERC404 } = await loadFixture(deployContractFixtures);
 
-      await mockERC20
-        .connect(bob)
-        .transferFrom(alice.address, maria.address, 5);
-      const aliceBalance = await mockERC20.balanceOf(alice.address);
-      const mariaBalance = await mockERC20.balanceOf(maria.address);
+    const id = 1;
+    const baseTokenURI = 'https://example.com/token/';
+    const expectedTokenURI = baseTokenURI + id.toString();
 
-      expect(aliceBalance).to.equal(999995);
-      expect(mariaBalance).to.equal(5);
-    });
+    await myERC404.setTokenURI(baseTokenURI);
 
-    it('should return remaining allowance', async () => {
-      const { alice, bob, maria, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
-      await mockERC20.connect(alice).approve(bob.address, 10);
+    expect(await myERC404.tokenURI(id)).to.equal(expectedTokenURI);
+  });
 
-      await mockERC20
-        .connect(bob)
-        .transferFrom(alice.address, maria.address, 5);
+  it('Should return metadata if baseTokenURI is not set', async () => {
+    const { myERC404 } = await loadFixture(deployContractFixtures);
+    const dataURI = 'https://example.com/data/';
+    const id = 1;
 
-      expect(await mockERC20.allowance(alice.address, bob.address)).to.equal(5);
-    });
+    await myERC404.setDataURI(dataURI);
 
-    it('should revert if not approved for transfer', async () => {
-      const { alice, bob, maria, mockERC20 } = await loadFixture(
-        deployContractFixtures,
-      );
+    const data = await myERC404.tokenURI(id);
 
-      await expect(
-        mockERC20.connect(maria).transferFrom(alice.address, bob.address, 5),
-      )
-        .to.be.revertedWithCustomError(mockERC20, `ERC20InsufficientAllowance`)
-        .withArgs(maria.address, 0, 5);
-    });
+    // Extract JSON string from the data
+    const jsonString = data.substring(
+      data.indexOf('{'),
+      data.lastIndexOf('}') + 1,
+    );
+
+    // Parse the JSON string
+    const parsedData = JSON.parse(jsonString);
+
+    expect(parsedData).to.be.eql(tokenURIResponseData());
+  });
+
+  it('Should transfer tokens successfully', async () => {
+    const { myERC404, owner, bob } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+    await myERC404.transfer(bob.address, amount);
+
+    expect(await myERC404.balanceOf(owner.address)).to.equal(
+      BigInt((await myERC404.TOTAL_SUPPLY()) - amount),
+    );
+    expect(await myERC404.balanceOf(bob.address)).to.equal(amount);
+
+    // mint token of Id #1
+    expect(await myERC404.ownerOf(1)).to.be.equal(bob.address);
+  });
+
+  it('Should emit ERC20Transfer event when tokens are transferred successfully', async () => {
+    const { myERC404, owner, bob } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+    await expect(myERC404.transfer(bob.address, amount))
+      .to.emit(myERC404, 'ERC20Transfer')
+      .withArgs(owner.address, bob.address, amount);
+  });
+
+  it('Should emit Transfer event when mint is called upon transfer', async () => {
+    const { myERC404, bob } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+    await expect(myERC404.transfer(bob.address, amount))
+      .to.emit(myERC404, 'Transfer')
+      .withArgs(ethers.ZeroAddress, bob.address, 1);
+  });
+
+  it('Should revert when transferring tokens to Zero Address', async () => {
+    const { myERC404 } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+    await expect(
+      myERC404.transfer(ethers.ZeroAddress, amount),
+    ).to.be.revertedWithCustomError(myERC404, 'InvalidRecipient');
+  });
+
+  it('Should revert with panic when transferring tokens without approval', async () => {
+    const { myERC404, owner, bob } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+
+    await expect(
+      myERC404.transferFrom(owner.address, bob.address, amount),
+    ).to.be.revertedWithPanic('0x11');
+  });
+
+  it('Should approve and transfer tokens correctly', async () => {
+    const { myERC404, owner, bob } = await loadFixture(deployContractFixtures);
+    const amount = BigInt(1 * 10 ** 18);
+    await myERC404.approve(owner.address, amount);
+
+    expect(await myERC404.allowance(owner.address, owner.address)).to.equal(
+      amount,
+    );
+
+    await myERC404
+      .connect(owner)
+      .transferFrom(owner.address, bob.address, amount);
+
+    expect(await myERC404.balanceOf(owner.address)).to.equal(
+      BigInt((await myERC404.TOTAL_SUPPLY()) - amount),
+    );
+    expect(await myERC404.balanceOf(bob.address)).to.equal(amount);
+
+    // mint token of Id #1
+    expect(await myERC404.ownerOf(1)).to.be.equal(bob.address);
   });
 });
