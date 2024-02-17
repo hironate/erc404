@@ -45,6 +45,19 @@ await run('verify:verify', {
 });
 ```
 
+### `Copy .env file from .env.example`
+
+```bash
+cp .env.example .env`
+```
+
+Clean and compile contracts with below commands
+
+```bash
+npx hardhat clean
+npx hardhat compile
+```
+
 ### `deploy:my-erc404`
 
 Deploys the MyERC404 contract to the specified network.
@@ -82,8 +95,8 @@ This task will export the ABI for the `MyERC404.sol` contract and save it as `My
 Whitelists the owner of the contract.
 
 ```bash
-npx hardhat whitelist-owner:erc404 --network sepolia
-npx hardhat whitelist-owner:erc404 --network mainnet
+npx hardhat whitelist-owner:my-erc404 --network sepolia
+npx hardhat whitelist-owner:my-erc404 --network mainnet
 ```
 
 This task will whitelist the deployer/owner of the contract. Whitelisting will exempt them from token minting and burning during transfers
