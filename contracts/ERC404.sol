@@ -62,6 +62,8 @@ abstract contract ERC404 is Ownable {
     /// @dev Addresses whitelisted from minting / burning for gas savings (pairs, routers, etc)
     mapping(address => bool) public whitelist;
 
+    uint256[] internal tokenBank;
+
     // Events
     event ERC20Transfer(
         address indexed from,
@@ -281,7 +283,8 @@ abstract contract ERC404 is Ownable {
             uint256 tokensToBurn = (balanceBeforeSender / unit) -
                 (balanceOf[from] / unit);
             for (uint256 i = 0; i < tokensToBurn; i++) {
-                _burn(from);
+                uint256 id = _burn(from);
+                tokenBank.push(id);
             }
         }
 
@@ -303,11 +306,18 @@ abstract contract ERC404 is Ownable {
             revert InvalidRecipient();
         }
 
-        unchecked {
-            minted++;
-        }
+        uint256 id;
 
-        uint256 id = minted;
+        if (tokenBank.length == 0) {
+            unchecked {
+                minted++;
+            }
+
+            id = minted;
+        } else {
+            id = tokenBank[tokenBank.length - 1];
+            tokenBank.pop();
+        }
 
         if (_ownerOf[id] != address(0)) {
             revert AlreadyExists();
@@ -320,12 +330,12 @@ abstract contract ERC404 is Ownable {
         emit Transfer(address(0), to, id);
     }
 
-    function _burn(address from) internal virtual {
+    function _burn(address from) internal virtual returns (uint256 id) {
         if (from == address(0)) {
             revert InvalidSender();
         }
 
-        uint256 id = _owned[from][_owned[from].length - 1];
+        id = _owned[from][_owned[from].length - 1];
         _owned[from].pop();
         delete _ownedIndex[id];
         delete _ownerOf[id];

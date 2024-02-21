@@ -1,5 +1,5 @@
 const CONTRACT_NAMES = {
-  MY_ERC404: 'MyERC404',
+  BOXHEDS: 'Boxheds',
 };
 
 module.exports = { CONTRACT_NAMES };

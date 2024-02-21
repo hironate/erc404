@@ -49,6 +49,18 @@ module.exports = {
       chainId: 80001,
       gas: 'auto',
     },
+    fuji: {
+      url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [`${ACCOUNT_PRIVATE_KEY}`],
+      chainId: 43113,
+      gas: 'auto',
+    },
+    avalanche: {
+      url: `https://avalanche-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [`${ACCOUNT_PRIVATE_KEY}`],
+      chainId: 43114,
+      gas: 'auto',
+    },
     // add more networks here
   },
   etherscan: {
@@ -57,6 +69,8 @@ module.exports = {
       sepolia: process.env.ETHERSCAN_API_KEY,
       polygon: process.env.POLYGONSCAN_API_KEY,
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      fuji: process.env.ETHERSCAN_API_KEY,
+      avalanche: process.env.ETHERSCAN_API_KEY,
     },
   },
   gasReporter: {
