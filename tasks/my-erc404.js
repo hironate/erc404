@@ -8,7 +8,7 @@ const {
   readABI,
 } = require('../utils/io');
 
-const tokenSupplierAddress = '';
+const tokenSupplierAddress = '0xd463265e53F1f68ed5Bbedf5748D6508f0AA0091';
 
 task('deploy:boxheds', 'Deploy Boxheds Contract', async (_, { ethers }) => {
   const accounts = await ethers.getSigners();

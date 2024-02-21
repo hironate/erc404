@@ -61,6 +61,10 @@ module.exports = {
       chainId: 43114,
       gas: 'auto',
     },
+    snowtrace: {
+      url: 'https://api.avax.network/ext/bc/C/rpc',
+      accounts: [`${ACCOUNT_PRIVATE_KEY}`],
+    },
     // add more networks here
   },
   etherscan: {
@@ -71,7 +75,19 @@ module.exports = {
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
       fuji: process.env.ETHERSCAN_API_KEY,
       avalanche: process.env.ETHERSCAN_API_KEY,
+      snowtrace: 'snowtrace',
     },
+    customChains: [
+      {
+        network: 'snowtrace',
+        chainId: 43114,
+        urls: {
+          apiURL:
+            'https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan',
+          browserURL: 'https://snowtrace.io',
+        },
+      },
+    ],
   },
   gasReporter: {
     enabled: true,
