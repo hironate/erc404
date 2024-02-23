@@ -8,7 +8,7 @@ const {
   readABI,
 } = require('../utils/io');
 
-const tokenSupplierAddress = '0xd463265e53F1f68ed5Bbedf5748D6508f0AA0091';
+const tokenSupplierAddress = '0x58d2fCF0d8F83536b1A54E17FbF11b2baC9FA8c2';
 
 task('deploy:boxheds', 'Deploy Boxheds Contract', async (_, { ethers }) => {
   const accounts = await ethers.getSigners();
@@ -56,7 +56,10 @@ task(
 
     const contract = new ethers.Contract(myErc404.address, abi, signer);
 
-    const tx = await contract.setWhitelist(tokenSupplierAddress, true);
+    const tx = await contract.setWhitelist(
+      '0xF04f146d32b01ae80Fd4f9c5dC2D076690A97F24',
+      true,
+    );
     await tx.wait();
 
     console.info(`${tokenSupplierAddress} whitelisted`);

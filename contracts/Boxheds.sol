@@ -31,8 +31,6 @@ contract Boxheds is ERC404 {
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-        if (id > ERC721_SUPPLY) revert NonExistentToken();
-
         return string(abi.encodePacked(baseTokenURI, id.toString(), ".json"));
     }
 }

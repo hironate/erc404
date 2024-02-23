@@ -29,10 +29,10 @@ abstract contract ERC404 is Ownable {
     string public symbol;
 
     /// @dev Decimals for fractional representation
-    uint8 public immutable DECIMALS;
+    uint8 public immutable decimals;
 
     /// @dev Total supply in fractionalized representation
-    uint256 public immutable TOTAL_SUPPLY;
+    uint256 public immutable totalSupply;
 
     /// @dev Current mint counter, monotonically increasing to ensure accurate ownership
     uint256 public minted;
@@ -108,8 +108,8 @@ abstract contract ERC404 is Ownable {
     ) Ownable(_owner) {
         name = _name;
         symbol = _symbol;
-        DECIMALS = _decimals;
-        TOTAL_SUPPLY = _totalNativeSupply * (10 ** DECIMALS);
+        decimals = _decimals;
+        totalSupply = _totalNativeSupply * (10 ** decimals);
     }
 
     /// @notice Initialization function to set pairs / etc
@@ -354,6 +354,6 @@ abstract contract ERC404 is Ownable {
 
     // Internal utility logic
     function _getUnit() internal view returns (uint256) {
-        return 10 ** DECIMALS;
+        return 10 ** decimals;
     }
 }
