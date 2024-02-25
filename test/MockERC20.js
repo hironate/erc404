@@ -98,7 +98,7 @@ describe('Testing ERC404 Contract', async () => {
     await myERC404.transfer(bob.address, amount);
 
     expect(await myERC404.balanceOf(owner.address)).to.equal(
-      BigInt((await myERC404.TOTAL_SUPPLY()) - amount),
+      BigInt((await myERC404.totalSupply()) - amount),
     );
     expect(await myERC404.balanceOf(bob.address)).to.equal(amount);
 
@@ -153,7 +153,7 @@ describe('Testing ERC404 Contract', async () => {
       .transferFrom(owner.address, bob.address, amount);
 
     expect(await myERC404.balanceOf(owner.address)).to.equal(
-      BigInt((await myERC404.TOTAL_SUPPLY()) - amount),
+      BigInt((await myERC404.totalSupply()) - amount),
     );
     expect(await myERC404.balanceOf(bob.address)).to.equal(amount);
 

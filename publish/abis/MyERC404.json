@@ -191,7 +191,7 @@
   },
   {
     "inputs": [],
-    "name": "DECIMALS",
+    "name": "decimals",
     "outputs": [
       {
         "internalType": "uint8",
@@ -204,7 +204,7 @@
   },
   {
     "inputs": [],
-    "name": "TOTAL_SUPPLY",
+    "name": "totalSupply",
     "outputs": [
       {
         "internalType": "uint256",
