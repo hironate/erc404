@@ -1,5 +1,5 @@
 const CONTRACT_NAMES = {
-  MY_ERC404: 'MyERC404',
+  GRADIENT_CIRCLE: 'GradientCircle',
 };
 
 module.exports = { CONTRACT_NAMES };
