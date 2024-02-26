@@ -78,7 +78,7 @@ task(
 );
 
 task(
-  'set-token-uri',
+  'set-token-uri:gradient-circle',
   'Sets the Base token URI in the contract',
   async (_, { ethers }) => {
     const gradientCircle = readContract(CONTRACT_NAMES.GRADIENT_CIRCLE);
@@ -89,7 +89,8 @@ task(
 
     const contract = new ethers.Contract(gradientCircle.address, abi, signer);
 
-    const dataURI = '';
+    const dataURI =
+      'ipfs://bafybeihlwybp2ku6mj37aaolcfxfdvdgw34hq52owquwu7lwqgi4yyfmpa/';
 
     const tx = await contract.setTokenURI(dataURI);
     await tx.wait();
