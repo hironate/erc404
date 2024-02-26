@@ -8,8 +8,6 @@ const {
   readABI,
 } = require('../utils/io');
 
-const tokenSupplierAddress = '0x58d2fCF0d8F83536b1A54E17FbF11b2baC9FA8c2';
-
 task(
   'deploy:gradient-circle',
   'Deploy GradientCircle Contract',
@@ -23,7 +21,7 @@ task(
         // owner address
         signer.address,
         // token supplier address
-        tokenSupplierAddress,
+        signer.address,
       ],
     );
 
@@ -35,7 +33,7 @@ task(
       CONTRACT_NAMES.GRADIENT_CIRCLE,
       gradientCircle.target,
       signer.address,
-      [],
+      [signer.address, signer.address],
     );
   },
 );
@@ -54,7 +52,7 @@ task(
         // owner address
         signer.address,
         // token supplier address
-        tokenSupplierAddress,
+        signer.address,
       ],
     });
   },
@@ -72,13 +70,10 @@ task(
 
     const contract = new ethers.Contract(gradientCircle.address, abi, signer);
 
-    const tx = await contract.setWhitelist(
-      '0xF04f146d32b01ae80Fd4f9c5dC2D076690A97F24',
-      true,
-    );
+    const tx = await contract.setWhitelist(signer.address, true);
     await tx.wait();
 
-    console.info(`${tokenSupplierAddress} whitelisted`);
+    console.info(`${signer.address} whitelisted`);
   },
 );
 
