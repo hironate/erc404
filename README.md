@@ -140,6 +140,10 @@ UniversalRouter 2: 0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B
 SwapRouter: 0xE592427A0AEce92De3Edee1F18E0157C05861564
 SwapRouter02: 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45
 NonfungiblePositionManager: 0xc36442b4a4522e871399cd717abdd847ab11fe88
+
+# Other Chains
+[https://github.com/Uniswap/sdk-core/blob/5365ae4cd021ab53b94b0879ec6ceb6ad3ebdce9/src/addresses.ts](https://github.com/Uniswap/sdk-core/blob/5365ae4cd021ab53b94b0879ec6ceb6ad3ebdce9/src/addresses.ts)
+
 ```
 
 ## License
