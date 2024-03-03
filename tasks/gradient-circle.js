@@ -70,7 +70,11 @@ task(
 
     const contract = new ethers.Contract(gradientCircle.address, abi, signer);
 
-    const tx = await contract.setWhitelist(signer.address, true);
+    // Whitelist pool address
+    const tx = await contract.setWhitelist(
+      '0xf8d2a85784050ce47d1ac0b96e7ccc634447cdee',
+      true,
+    );
     await tx.wait();
 
     console.info(`${signer.address} whitelisted`);
